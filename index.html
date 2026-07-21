@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teresa — One Terminal. Every Market.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0D12;
+    --panel: #10141C;
+    --panel-2: #151A24;
+    --line: #1F2530;
+    --text: #E7E9EE;
+    --text-dim: #8A93A3;
+    --text-faint: #545D6E;
+    --long: #35D999;
+    --long-dim: #1B4A3B;
+    --short: #FF6E5E;
+    --short-dim: #4A2521;
+    --amber: #F0B429;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  ::selection{background:var(--amber);color:#0A0D12;}
+
+  /* ---------- ticker ---------- */
+  .ticker-wrap{
+    border-bottom:1px solid var(--line);
+    background:var(--panel);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:9px 0;
+  }
+  .ticker{
+    display:inline-flex;
+    animation:scroll 32s linear infinite;
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.02em;
+  }
+  .ticker span{padding:0 22px;color:var(--text-dim);border-right:1px solid var(--line);}
+  .ticker .up{color:var(--long);}
+  .ticker .down{color:var(--short);}
+  @keyframes scroll{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-50%);}
+  }
+
+  /* ---------- nav ---------- */
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 40px;
+    max-width:1280px;
+    margin:0 auto;
+  }
+  .logo{
+    font-family:var(--font-mono);
+    font-weight:600;
+    font-size:17px;
+    letter-spacing:0.01em;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo .dot{width:7px;height:7px;border-radius:50%;background:var(--long);display:inline-block;box-shadow:0 0 8px var(--long);}
+  .nav-links{display:flex;gap:34px;font-size:14px;color:var(--text-dim);}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{
+    font-family:var(--font-mono);
+    font-size:13px;
+    padding:9px 18px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    color:var(--text);
+  }
+  .nav-cta:hover{border-color:var(--amber);color:var(--amber);}
+
+  @media(max-width:800px){
+    .nav-links{display:none;}
+    nav{padding:16px 20px;}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    max-width:1280px;
+    margin:0 auto;
+    padding:64px 40px 90px;
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:56px;
+    align-items:start;
+  }
+  @media(max-width:960px){
+    .hero{grid-template-columns:1fr;padding:40px 20px 60px;}
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--amber);
+    letter-spacing:0.08em;
+    margin-bottom:22px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{content:'';width:16px;height:1px;background:var(--amber);}
+
+  h1{
+    font-family:var(--font-display);
+    font-size:clamp(38px, 5.2vw, 68px);
+    font-weight:600;
+    line-height:1.04;
+    letter-spacing:-0.01em;
+    margin-bottom:26px;
+  }
+  h1 .accent{color:var(--long);}
+
+  .hero-sub{
+    font-size:17px;
+    color:var(--text-dim);
+    max-width:480px;
+    margin-bottom:36px;
+    line-height:1.65;
+  }
+
+  .hero-ctas{display:flex;gap:14px;margin-bottom:44px;flex-wrap:wrap;}
+  .btn-primary{
+    font-family:var(--font-mono);
+    font-size:14px;
+    font-weight:500;
+    background:var(--long);
+    color:#08130E;
+    padding:13px 24px;
+    border-radius:4px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-primary:hover{background:#4EE8AB;}
+  .btn-secondary{
+    font-family:var(--font-mono);
+    font-size:14px;
+    padding:13px 22px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    color:var(--text-dim);
+  }
+  .btn-secondary:hover{color:var(--text);border-color:var(--text-faint);}
+
+  .robinhood-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--text-faint);
+    padding-top:6px;
+  }
+  .robinhood-badge .mark{
+    width:18px;height:18px;
+    border-radius:5px;
+    background:linear-gradient(135deg,#00C805,#00A804);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:11px;color:#04250a;font-weight:700;
+  }
+
+  /* ---------- terminal window ---------- */
+  .term{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  .term-bar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:11px 14px;
+    background:var(--panel-2);
+    border-bottom:1px solid var(--line);
+  }
+  .term-bar .tf{width:10px;height:10px;border-radius:50%;}
+  .tf1{background:#3A3F4A;}
+  .tf2{background:#3A3F4A;}
+  .tf3{background:#3A3F4A;}
+  .term-bar span{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+    margin-left:6px;
+  }
+  .term-body{
+    padding:22px 20px 26px;
+    font-family:var(--font-mono);
+    font-size:13.5px;
+    min-height:340px;
+  }
+  .term-line{
+    display:flex;
+    gap:10px;
+    margin-bottom:14px;
+    color:var(--text-dim);
+    opacity:0;
+    animation:fadein 0.5s forwards;
+  }
+  .term-line .prompt{color:var(--amber);}
+  .term-line .cmd{color:var(--text);}
+  .term-line.result{color:var(--text-faint);padding-left:20px;font-size:12.5px;}
+  .term-line .long-tag{color:var(--long);}
+  .term-line .short-tag{color:var(--short);}
+
+  .term-line:nth-child(1){animation-delay:0.2s;}
+  .term-line:nth-child(2){animation-delay:0.9s;}
+  .term-line:nth-child(3){animation-delay:1.3s;}
+  .term-line:nth-child(4){animation-delay:2.0s;}
+  .term-line:nth-child(5){animation-delay:2.4s;}
+  .term-line:nth-child(6){animation-delay:3.1s;}
+  .term-line:nth-child(7){animation-delay:3.5s;}
+
+  @keyframes fadein{
+    from{opacity:0;transform:translateY(4px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  .cursor{
+    display:inline-block;
+    width:7px;height:14px;
+    background:var(--amber);
+    animation:blink 1s step-end infinite;
+    vertical-align:middle;
+  }
+  @keyframes blink{50%{opacity:0;}}
+
+  .term-chart{
+    margin-top:18px;
+    height:70px;
+    display:flex;
+    align-items:flex-end;
+    gap:3px;
+    opacity:0;
+    animation:fadein 0.6s forwards;
+    animation-delay:4s;
+  }
+  .term-chart .bar{
+    flex:1;
+    background:var(--long-dim);
+    border-radius:1px 1px 0 0;
+  }
+  .term-chart .bar.down{background:var(--short-dim);}
+
+  /* ---------- section shared ---------- */
+  section{
+    max-width:1280px;
+    margin:0 auto;
+    padding:100px 40px;
+    border-top:1px solid var(--line);
+  }
+  @media(max-width:800px){section{padding:64px 20px;}}
+
+  .sec-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:40px;
+    margin-bottom:56px;
+    flex-wrap:wrap;
+  }
+  .sec-eyebrow{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--text-faint);
+    letter-spacing:0.05em;
+    margin-bottom:14px;
+  }
+  .sec-eyebrow .path{color:var(--amber);}
+  .sec-title{
+    font-family:var(--font-display);
+    font-size:clamp(26px,3vw,38px);
+    font-weight:600;
+    letter-spacing:-0.01em;
+    max-width:560px;
+  }
+  .sec-note{
+    font-size:14.5px;
+    color:var(--text-dim);
+    max-width:320px;
+  }
+
+  /* ---------- capability grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  @media(max-width:960px){.grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr;}}
+
+  .cap{
+    background:var(--panel);
+    padding:32px 26px;
+    transition:background 0.2s;
+  }
+  .cap:hover{background:var(--panel-2);}
+  .cap .k{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+    margin-bottom:18px;
+  }
+  .cap h3{
+    font-family:var(--font-display);
+    font-size:19px;
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .cap p{font-size:14px;color:var(--text-dim);line-height:1.6;}
+
+  /* ---------- leverage strip ---------- */
+  .lev{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:60px;
+    align-items:center;
+  }
+  @media(max-width:900px){.lev{grid-template-columns:1fr;gap:36px;}}
+  .lev-visual{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:30px;
+  }
+  .lev-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+    font-family:var(--font-mono);
+    font-size:13px;
+  }
+  .lev-row:last-child{border-bottom:none;}
+  .lev-row .side{
+    padding:3px 10px;
+    border-radius:3px;
+    font-size:11.5px;
+    font-weight:600;
+  }
+  .side.long{background:var(--long-dim);color:var(--long);}
+  .side.short{background:var(--short-dim);color:var(--short);}
+  .lev-row .mult{color:var(--amber);}
+
+  .lev-text h2{
+    font-family:var(--font-display);
+    font-size:clamp(26px,3vw,36px);
+    font-weight:600;
+    line-height:1.15;
+    margin-bottom:20px;
+    letter-spacing:-0.01em;
+  }
+  .lev-text p{color:var(--text-dim);font-size:15.5px;margin-bottom:14px;max-width:460px;}
+  .risk-note{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--text-faint);
+    border-left:2px solid var(--short-dim);
+    padding-left:12px;
+    margin-top:20px;
+  }
+
+  /* ---------- agents ---------- */
+  .agent-flow{
+    display:flex;
+    align-items:center;
+    gap:0;
+    overflow-x:auto;
+    padding:8px 0 20px;
+  }
+  .agent-node{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:20px 22px;
+    min-width:190px;
+    flex-shrink:0;
+  }
+  .agent-node .n{font-family:var(--font-mono);font-size:11px;color:var(--amber);margin-bottom:8px;}
+  .agent-node h4{font-family:var(--font-display);font-size:16px;font-weight:600;margin-bottom:6px;}
+  .agent-node p{font-size:12.5px;color:var(--text-dim);}
+  .agent-arrow{
+    color:var(--text-faint);
+    padding:0 18px;
+    font-family:var(--font-mono);
+    flex-shrink:0;
+  }
+
+  /* ---------- feed ---------- */
+  .feed-wrap{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:24px;
+    max-width:560px;
+  }
+  .feed-wrap .twitter-timeline{
+    border:none !important;
+  }
+
+  /* ---------- cta ---------- */
+  .cta-section{
+    text-align:center;
+    padding:110px 40px;
+  }
+  .cta-section h2{
+    font-family:var(--font-display);
+    font-size:clamp(30px,4.2vw,52px);
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin-bottom:22px;
+  }
+  .cta-section p{color:var(--text-dim);margin-bottom:38px;font-size:16px;}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:34px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    max-width:1280px;
+    margin:0 auto;
+    font-size:13px;
+    color:var(--text-faint);
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  footer .logo{font-size:14px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important;animation-iteration-count:1 !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker-wrap">
+  <div class="ticker" id="tickerTrack"></div>
+</div>
+
+<nav>
+  <div class="logo"><span class="dot"></span>TERESA</div>
+  <div class="nav-links">
+    <a href="#capabilities">Capabilities</a>
+    <a href="#leverage">Execution</a>
+    <a href="#agents">Agents</a>
+    <a href="#feed">Updates</a>
+  </div>
+  <a href="#cta" class="nav-cta">$ get_access</a>
+</nav>
+
+<div class="hero">
+  <div>
+    <div class="eyebrow">MARKET INFRASTRUCTURE, UNIFIED</div>
+    <h1>One terminal.<br>Every <span class="accent">market move.</span></h1>
+    <p class="hero-sub">Markets are fragmented — research lives in one place, execution in another, data somewhere else. Teresa brings them together in a single terminal, so the gap between an idea and a filled order disappears.</p>
+    <div class="hero-ctas">
+      <a href="#cta" class="btn-primary">Open Terminal →</a>
+      <a href="#capabilities" class="btn-secondary">See capabilities</a>
+    </div>
+    <div class="robinhood-badge"><span class="mark">R</span> Built on Robinhood — your trades settle where you already trust them.</div>
+  </div>
+
+  <div class="term">
+    <div class="term-bar">
+      <span class="tf tf1"></span><span class="tf tf2"></span><span class="tf tf3"></span>
+      <span>teresa — terminal</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="prompt">›</span><span class="cmd">research NVDA --structure</span></div>
+      <div class="term-line result">order flow imbalance detected · 4m8s ago</div>
+      <div class="term-line"><span class="prompt">›</span><span class="cmd">agent.deploy momentum-scalper</span></div>
+      <div class="term-line result">agent live · watching 12 tickers</div>
+      <div class="term-line"><span class="prompt">›</span><span class="cmd">long NVDA <span class="long-tag">100x</span> size=2400</span></div>
+      <div class="term-line result">filled @ 121.84 · position opened</div>
+      <div class="term-line"><span class="prompt">›</span><span class="cmd">workflow.automate "trim on +8%"<span class="cursor"></span></span></div>
+      <div class="term-chart" id="termChart"></div>
+    </div>
+  </div>
+</div>
+
+<section id="capabilities">
+  <div class="sec-head">
+    <div>
+      <div class="sec-eyebrow"><span class="path">~/capabilities</span> — what lives in the terminal</div>
+      <div class="sec-title">Four disciplines. One workspace.</div>
+    </div>
+    <div class="sec-note">Everything a discretionary or systematic trader needs, without switching windows.</div>
+  </div>
+  <div class="grid">
+    <div class="cap">
+      <div class="k">01 · TRADE</div>
+      <h3>Stocks, direct</h3>
+      <p>Trade equities natively — no separate brokerage tab, no re-entering size or symbol.</p>
+    </div>
+    <div class="cap">
+      <div class="k">02 · AGENTS</div>
+      <h3>Custom AI trading agents</h3>
+      <p>Configure agents to watch specific setups and act on them, in your voice and your risk limits.</p>
+    </div>
+    <div class="cap">
+      <div class="k">03 · ANALYZE</div>
+      <h3>Live market structure</h3>
+      <p>See order flow, liquidity, and momentum shifts as they happen, not after the candle closes.</p>
+    </div>
+    <div class="cap">
+      <div class="k">04 · AUTOMATE</div>
+      <h3>End-to-end workflows</h3>
+      <p>Chain research, alerts, and execution into a single automated sequence you set once.</p>
+    </div>
+  </div>
+</section>
+
+<section id="leverage">
+  <div class="lev">
+    <div class="lev-text">
+      <div class="sec-eyebrow"><span class="path">~/execution</span></div>
+      <h2>Long or short. Up to 100× leverage.</h2>
+      <p>Direction and size, decided by you. Teresa executes both sides of the market with leverage up to 100×, so conviction isn't limited by capital.</p>
+      <p class="risk-note">Leverage magnifies gains and losses alike. Trade size you can afford to lose.</p>
+    </div>
+    <div class="lev-visual">
+      <div class="lev-row"><span>AAPL</span><span class="side long">LONG</span><span class="mult">42×</span></div>
+      <div class="lev-row"><span>TSLA</span><span class="side short">SHORT</span><span class="mult">18×</span></div>
+      <div class="lev-row"><span>NVDA</span><span class="side long">LONG</span><span class="mult">100×</span></div>
+      <div class="lev-row"><span>SPY</span><span class="side short">SHORT</span><span class="mult">6×</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="agents">
+  <div class="sec-head">
+    <div>
+      <div class="sec-eyebrow"><span class="path">~/agents</span></div>
+      <div class="sec-title">Agents that watch the market so you don't have to.</div>
+    </div>
+    <div class="sec-note">Each agent runs a defined thesis continuously, and hands off to execution the moment its condition is met.</div>
+  </div>
+  <div class="agent-flow">
+    <div class="agent-node"><div class="n">STEP 1</div><h4>Define thesis</h4><p>Set the setup, indicator, or news trigger the agent should watch for.</p></div>
+    <div class="agent-arrow">→</div>
+    <div class="agent-node"><div class="n">STEP 2</div><h4>Agent monitors</h4><p>Runs continuously against live market structure and order flow.</p></div>
+    <div class="agent-arrow">→</div>
+    <div class="agent-node"><div class="n">STEP 3</div><h4>Condition met</h4><p>Alert fires, or the agent proceeds straight to execution.</p></div>
+    <div class="agent-arrow">→</div>
+    <div class="agent-node"><div class="n">STEP 4</div><h4>Order placed</h4><p>Position opens on Robinhood, within limits you set upfront.</p></div>
+  </div>
+</section>
+
+<section id="feed">
+  <div class="sec-head">
+    <div>
+      <div class="sec-eyebrow"><span class="path">~/updates</span></div>
+      <div class="sec-title">Live from the terminal team.</div>
+    </div>
+    <div class="sec-note">Product updates, market notes, and release logs — straight from X.</div>
+  </div>
+  <div class="feed-wrap">
+    <a class="twitter-timeline" data-height="500" data-theme="dark" data-chrome="noheader nofooter noborders transparent" href="https://twitter.com/teresa_network?ref_src=twsrc%5Etfw">Tweets by teresa_network</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </div>
+</section>
+
+<section id="cta" class="cta-section" style="border-top:1px solid var(--line);">
+  <div class="sec-eyebrow" style="justify-content:center;display:flex;">~/get_access</div>
+  <h2>Stop switching windows.</h2>
+  <p>Research, agents, data, and execution — already in the same place.</p>
+  <div class="cta-row">
+    <a href="#" class="btn-primary">Open Terminal →</a>
+    <a href="#" class="btn-secondary">Read the docs</a>
+  </div>
+</section>
+
+<footer>
+  <div class="logo"><span class="dot"></span>TERESA</div>
+  <div>Built on Robinhood. Trading involves risk, including loss of principal.</div>
+</footer>
+
+<script>
+  // ticker content
+  const tickers = [
+    {s:'AAPL',v:'+1.24%',up:true},{s:'NVDA',v:'+3.08%',up:true},{s:'TSLA',v:'-0.62%',up:false},
+    {s:'SPY',v:'+0.41%',up:true},{s:'MSFT',v:'+0.87%',up:true},{s:'AMD',v:'-1.15%',up:false},
+    {s:'META',v:'+2.03%',up:true},{s:'COIN',v:'-2.44%',up:false},{s:'AMZN',v:'+0.55%',up:true},
+    {s:'GOOGL',v:'+0.29%',up:true}
+  ];
+  const track = document.getElementById('tickerTrack');
+  const seq = [...tickers, ...tickers].map(t =>
+    `<span>${t.s} <span class="${t.up?'up':'down'}">${t.v}</span></span>`
+  ).join('');
+  track.innerHTML = seq;
+
+  // hero mini chart bars
+  const chart = document.getElementById('termChart');
+  const heights = [22,34,18,40,30,55,44,60,48,65,58,70,52,66];
+  heights.forEach((h,i)=>{
+    const bar = document.createElement('div');
+    bar.className = 'bar' + (h < heights[i-1] ? ' down' : '');
+    bar.style.height = h + '%';
+    chart.appendChild(bar);
+  });
+</script>
+
+</body>
+</html>
